@@ -60,7 +60,6 @@ module MSX1_Mist
 
 
 assign LED = 0;
-assign BUTTONS = 0;
 
 //////////////////////////////////////////////////////////////////
 
@@ -71,11 +70,9 @@ localparam CONF_STR = {
         "MSX1;;",
         "S,VHD;",
         "OE,Reset after Mount,No,Yes;",
-		  "OFG,Scandoubler Fx,None,HQ2x,CRT 25%,CRT 50%;",
-        "O1,Aspect ratio,4:3,16:9;",
+		  "O45,Scandoubler Fx,None,HQ2x,CRT 25%,CRT 50%;",
         "OD,Joysticks Swap,No,Yes;",
         "T0,Reset;",
-        "R0,Reset and close OSD;",
         "V,v",`BUILD_DATE 
 };
 
@@ -150,7 +147,6 @@ mist_io #(.STRLEN($size(CONF_STR)>>3), .PS2DIV(750)) mist_io
 	.ps2_mouse(),
    .joystick_analog_0(),
    .joystick_analog_1(),
-	.scandoubler_disable(),
 	
    //Keyboard Ps2
    .ps2_kbd_clk(ps2_kbd_clk_in),
@@ -168,7 +164,7 @@ mist_io #(.STRLEN($size(CONF_STR)>>3), .PS2DIV(750)) mist_io
 wire clock_sdram_s, sdram_clk_o, clock_vga_s, pll_locked;
 wire clk_sys;
 
-pll pll
+pll pll1
 (
 	.inclk0(CLOCK_27),
 	.areset(0),
@@ -192,13 +188,8 @@ wire HBlank;
 wire HSync;
 wire VBlank;
 wire VSync;
-wire ce_pix = 1;
-wire [7:0] video;
-wire vga_blank, vga_DE;
+wire scandoubler_disable;
 
-
-
-assign CLK_VIDEO = clock_vga_s;
 
 
 
@@ -221,7 +212,7 @@ wire vsdmiso;
 sd_card sd_card
 (
 	.*,
-	.clk_spi(clk_sys),  //(clk_100Mhz),//(sd_clk_spi),//OK (clk_100Mhz) con clk_sys = CLK_50M, //(clk_250Mhz),
+	.clk_spi(clk_sys), 
 	.sdhc(sdhc),
 	.sck(sdclk),
 	.ss(sdss | ~vsd_sel),
@@ -327,7 +318,7 @@ Mister_top Msx1Core
 	);
 	
 
-reg [4:0] Rx, Gx, Bx;
+reg [3:0] Rx, Gx, Bx;
 
 
 /////////  EAR added by Fernando Mosquera & Rampa
@@ -338,12 +329,11 @@ assign tape_in = ~TAPE_IN;
 mist_video mist_video
 (
  .*,
- .scanlines (),
- .ce_divider (),
- .scandoubler_disable (),
- .no_csync (),
- .rotate   (),
- .blend (),
+ .scanlines  (scandoubler_disable ? 2'b00 : status[5:4]),
+ .ce_divider (1'b0),
+ .no_csync   (),
+ .rotate     (),
+ .blend      (),
  .R ({Rx,2'b0}),
  .G ({Gx,2'b0}),
  .B ({Bx,2'b0})

@@ -302,23 +302,7 @@ architecture behavior of Mister_top is
 	
 begin
 
---	-- PLL1
---	pll: entity work.pll1
---	port map (
---		inclk0	=> clock_50_i,
---		c0			=> clock_master_s,		-- 21.477 MHz					[21.484]
---		c1			=> clock_sdram_s,			-- 85.908 MHz (4x master)	[85.937]
---		c2			=> sdram_clk_o,			-- 85.908 MHz -90°
---		locked	=> pll_locked_s
---	);
---
---	-- PLL2
---	pll2: entity work.pll2
---	port map (
---		inclk0	=> clock_50_i,
---		c0			=> clock_vga_s,			--  25.200
---		c1			=> clock_dvi_s				-- 126.000
---	);
+
 
 	-- Clocks
 	clks: entity work.clocks
@@ -336,8 +320,8 @@ begin
 	-- The MSX1
 	the_msx: entity work.msx
 	generic map (
-		hw_id_g			=> 11,  -- 10 Mister, 8 Mist
-		hw_txt_g			=> "SiDi board",
+		hw_id_g			=> 8,  -- 10 Mister, 8 Mist
+		hw_txt_g			=> "MiST board",
 		hw_version_g	=> actual_version,
 		video_opt_g		=> 0,				
 		ramsize_g		=> 8192, --8192,
