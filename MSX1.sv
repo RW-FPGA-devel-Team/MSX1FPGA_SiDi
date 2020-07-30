@@ -71,6 +71,7 @@ localparam CONF_STR = {
         "MSX1;;",
         "S,VHD;",
         "OE,Reset after Mount,No,Yes;",
+		  "OFG,Scandoubler Fx,None,HQ2x,CRT 25%,CRT 50%;",
         "O1,Aspect ratio,4:3,16:9;",
         "OD,Joysticks Swap,No,Yes;",
         "T0,Reset;",
@@ -104,7 +105,7 @@ wire        sd_buff_wr;
 wire        img_readonly;
 
 wire        sd_ack_conf;
-wire        ioctl_wait = ~pll_locked;//0; //~ram_ready /*synthesis keep*/;//1'b1;
+wire        ioctl_wait = ~pll_locked;
 
 wire  [1:0] img_mounted;
 wire [31:0] img_size;
@@ -329,20 +330,10 @@ Mister_top Msx1Core
 reg [4:0] Rx, Gx, Bx;
 
 
-/////////  EAR added by Fernando Mosquera
+/////////  EAR added by Fernando Mosquera & Rampa
 
 wire tape_in;
 assign tape_in = ~TAPE_IN;
-
-
-//ltc2308_tape ltc2308_tape
-//(
-//  .clk(clk_sys),
-//  .ADC_BUS(ADC_BUS),
-//  .dout(tape_adc),
-//  .active(tape_adc_act)
-//);
-/////////////////////////
 
 mist_video mist_video
 (
