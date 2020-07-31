@@ -1,0 +1,9 @@
+#**************************************************************
+# Create Generated Clock
+#**************************************************************
+
+create_generated_clock -name {pll_1|altpll_component|auto_generated|pll1|clk[0]} -source [get_pins {pll_1|altpll_component|auto_generated|pll1|inclk[0]}] -duty_cycle 50.000 -multiply_by 35 -divide_by 44 -master_clock {clk_27} [get_pins {pll_1|altpll_component|auto_generated|pll1|clk[0]}] 
+create_generated_clock -name {pll_1|altpll_component|auto_generated|pll1|clk[1]} -source [get_pins {pll_1|altpll_component|auto_generated|pll1|inclk[0]}] -duty_cycle 50.000 -multiply_by 35 -divide_by 11 -master_clock {clk_27} [get_pins {pll_1|altpll_component|auto_generated|pll1|clk[1]}] 
+create_generated_clock -name {pll_1|altpll_component|auto_generated|pll1|clk[2]} -source [get_pins {pll_1|altpll_component|auto_generated|pll1|inclk[0]}] -duty_cycle 50.000 -multiply_by 35 -divide_by 11 -phase -45.000 -master_clock {clk_27} [get_pins {pll_1|altpll_component|auto_generated|pll1|clk[2]}] 
+create_generated_clock -name {sd1clk_pin} -source [get_pins {pll_1|altpll_component|auto_generated|pll1|clk[2]}] -master_clock {pll_1|altpll_component|auto_generated|pll1|clk[2]} [get_ports {sdram_clk_o}] 
+create_generated_clock -name {sysclk} -source [get_pins {pll_1|altpll_component|auto_generated|pll1|clk[1]}] -master_clock {pll_1|altpll_component|auto_generated|pll1|clk[1]} 

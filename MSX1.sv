@@ -60,6 +60,7 @@ module MSX1_Mist
 
 
 assign LED = 0;
+assign SDRAM_CLK = sdram_clk_o;
 
 //////////////////////////////////////////////////////////////////
 
@@ -164,14 +165,13 @@ mist_io #(.STRLEN($size(CONF_STR)>>3), .PS2DIV(750)) mist_io
 wire clock_sdram_s, sdram_clk_o, clock_vga_s, pll_locked;
 wire clk_sys;
 
-pll pll1
+pll1 pll1
 (
 	.inclk0(CLOCK_27),
-	.areset(0),
+	//.areset(0),
 	.c0(clk_sys),	// 21.477 MHz					[21.484]
 	.c1(clock_sdram_s),  // 85.908 MHz (4x master)	[85.937] - 85.908 ----- OJO con sdrammister 100
 	.c2(sdram_clk_o),		// 85.908 MHz -90°
-	.c3(clock_vga_s),		// 25.200
 	.locked(pll_locked)
 );
 
@@ -252,7 +252,7 @@ Mister_top Msx1Core
 
 
 //		-- SDRAM	(H57V256 = 16Mx16 = 32MB)
-		.sdram_clk_o	(SDRAM_CLK),					//		: out   std_logic								:= '0';
+//		.sdram_clk_o	(SDRAM_CLK),					//		: out   std_logic								:= '0';
 		.sdram_cke_o	(SDRAM_CKE),					//			: out   std_logic								:= '0';
 		.sdram_ad_o		(SDRAM_A),						//			: out   std_logic_vector(12 downto 0)	:= (others => '0');
 		.sdram_da_io	(SDRAM_DQ),						//			: inout std_logic_vector(15 downto 0)	:= (others => 'Z');
