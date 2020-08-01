@@ -60,6 +60,7 @@ module MSX1_Mist
 
 
 assign LED = 0;
+assign SDRAM_CLK = sdram_clk_o;
 
 //////////////////////////////////////////////////////////////////
 
@@ -164,25 +165,22 @@ mist_io #(.STRLEN($size(CONF_STR)>>3), .PS2DIV(750)) mist_io
 wire clock_sdram_s, sdram_clk_o, clock_vga_s, pll_locked;
 wire clk_sys;
 
-pll pll1
+
+pll1 pll1
 (
 	.inclk0(CLOCK_27),
-	.areset(0),
 	.c0(clk_sys),	// 21.477 MHz					[21.484]
 	.c1(clock_sdram_s),  // 85.908 MHz (4x master)	[85.937] - 85.908 ----- OJO con sdrammister 100
 	.c2(sdram_clk_o),		// 85.908 MHz -90°
-	.c3(clock_vga_s),		// 25.200
 	.locked(pll_locked)
 );
 
-//wire reset = RESET | status[0] | buttons[1];
 wire reset = status[0] | buttons[1] | !pll_locked | (status[14] && img_mounted);
 
 
 
 //////////////////////////////////////////////////////////////////
 
-//wire [1:0] col = status[4:3];
 
 wire HBlank;
 wire HSync;
@@ -237,8 +235,7 @@ wire [15:0] joy_B;
 
 Mister_top Msx1Core
 (
-//		-- Clocks
-//--		clock_50_i			: in    std_logic;
+
 
 
 		.clock_master_s	(clk_sys),	//		: std_logic;
@@ -248,11 +245,6 @@ Mister_top Msx1Core
 		.reset				(reset),
 		
 //		-- Buttons
-//		.btn_n_i				(),						//: in    std_logic_vector(4 downto 1);
-
-
-//		-- SDRAM	(H57V256 = 16Mx16 = 32MB)
-		.sdram_clk_o	(SDRAM_CLK),					//		: out   std_logic								:= '0';
 		.sdram_cke_o	(SDRAM_CKE),					//			: out   std_logic								:= '0';
 		.sdram_ad_o		(SDRAM_A),						//			: out   std_logic_vector(12 downto 0)	:= (others => '0');
 		.sdram_da_io	(SDRAM_DQ),						//			: inout std_logic_vector(15 downto 0)	:= (others => 'Z');
@@ -265,14 +257,10 @@ Mister_top Msx1Core
 
 		
 //		-- PS2
-//		ps2_clk_io			: inout std_logic								:= 'Z';
-//		ps2_data_io			: inout std_logic								:= 'Z';
 		.ps2_clk_i		(ps2_kbd_clk_in),				//	: inout std_logic								:= 'Z';
 		.ps2_data_i		(ps2_kbd_data_in),			//	: inout std_logic								:= 'Z';
 		.ps2_clk_o		(ps2_kbd_clk_out),			//	: inout std_logic								:= 'Z';
 		.ps2_data_o		(ps2_kbd_data_out),			//	: inout std_logic								:= 'Z';
-//		ps2_mouse_clk_io  : inout std_logic								:= 'Z';
-//		ps2_mouse_data_io : inout std_logic								:= 'Z';
 
 //		-- SD Card
 		.sd_cs_n_o		(sdss),								//: out   std_logic								:= '1';
@@ -300,8 +288,6 @@ Mister_top Msx1Core
 //		-- Audio
 		.dac_l_o        (AUDIO_L),
 		.dac_r_o			 (AUDIO_R),
-//		.PreDac_l_s			(AUDIO_L_DAC),		//: out   std_logic_vector(15 downto 0);
-//		.PreDac_r_s			(AUDIO_R_DAC),		//: out   std_logic_vector(15 downto 0);
 		.ear_i				(tape_in),		//	: in    std_logic;
 //		mic_o					: out   std_logic								:= '0';
 

@@ -146,38 +146,40 @@ end entity;
 
 architecture behavior of Mister_top is
 
-  	component sdramMister
-	port (
-		init			: in    std_logic;
-		clk			: in    std_logic;
-
---		refresh_i	=> '1',
-
-		SDRAM_DQ		: inout std_logic_vector(15 downto 0);
-		SDRAM_A		: out   std_logic_vector(12 downto 0);
-		SDRAM_DQML	: out   std_logic;
-		SDRAM_DQMH	: out   std_logic;
-		SDRAM_BA		: out   std_logic_vector( 1 downto 0);
-		SDRAM_nCS	: out   std_logic;
-		SDRAM_nWE	: out   std_logic;
-		SDRAM_nRAS	: out   std_logic;
-		SDRAM_nCAS	: out   std_logic;
-		SDRAM_CKE	: out   std_logic;		
-		SDRAM_CLK	: out   std_logic;
 
 
-		-- Static RAM bus
-		addr			: in    std_logic_vector(24 downto 0);		-- 32MB
-		dout			: out   std_logic_vector( 7 downto 0);
-		din			: in    std_logic_vector( 7 downto 0);
---		cs_i			=> ram_ce_s,
-		we				: in    std_logic;
-		rd				: in    std_logic;
-		ready			: buffer   std_logic
-		
-
-      );
-  end component;
+--  	component sdramMister
+--	port (
+--		init			: in    std_logic;
+--		clk			: in    std_logic;
+--
+----		refresh_i	=> '1',
+--
+--		SDRAM_DQ		: inout std_logic_vector(15 downto 0);
+--		SDRAM_A		: out   std_logic_vector(12 downto 0);
+--		SDRAM_DQML	: out   std_logic;
+--		SDRAM_DQMH	: out   std_logic;
+--		SDRAM_BA		: out   std_logic_vector( 1 downto 0);
+--		SDRAM_nCS	: out   std_logic;
+--		SDRAM_nWE	: out   std_logic;
+--		SDRAM_nRAS	: out   std_logic;
+--		SDRAM_nCAS	: out   std_logic;
+--		SDRAM_CKE	: out   std_logic;		
+--		SDRAM_CLK	: out   std_logic;
+--
+--
+--		-- Static RAM bus
+--		addr			: in    std_logic_vector(24 downto 0);		-- 32MB
+--		dout			: out   std_logic_vector( 7 downto 0);
+--		din			: in    std_logic_vector( 7 downto 0);
+----		cs_i			=> ram_ce_s,
+--		we				: in    std_logic;
+--		rd				: in    std_logic;
+--		ready			: buffer   std_logic
+--		
+--
+--      );
+--  end component;
 
   
 
@@ -302,23 +304,7 @@ architecture behavior of Mister_top is
 	
 begin
 
---	-- PLL1
---	pll: entity work.pll1
---	port map (
---		inclk0	=> clock_50_i,
---		c0			=> clock_master_s,		-- 21.477 MHz					[21.484]
---		c1			=> clock_sdram_s,			-- 85.908 MHz (4x master)	[85.937]
---		c2			=> sdram_clk_o,			-- 85.908 MHz -90°
---		locked	=> pll_locked_s
---	);
---
---	-- PLL2
---	pll2: entity work.pll2
---	port map (
---		inclk0	=> clock_50_i,
---		c0			=> clock_vga_s,			--  25.200
---		c1			=> clock_dvi_s				-- 126.000
---	);
+
 
 	-- Clocks
 	clks: entity work.clocks
@@ -336,8 +322,8 @@ begin
 	-- The MSX1
 	the_msx: entity work.msx
 	generic map (
-		hw_id_g			=> 11,  -- 10 Mister, 8 Mist
-		hw_txt_g			=> "SiDi board",
+		hw_id_g			=> 8,  -- 10 Mister, 8 Mist
+		hw_txt_g			=> "MiST board",
 		hw_version_g	=> actual_version,
 		video_opt_g		=> 0,				
 		ramsize_g		=> 8192, --8192,
@@ -458,36 +444,64 @@ begin
 	joyX_p7_o <= not joy1_out_s;		-- for Sega Genesis joypad
 	
 
-	-- RAM
-	ram: sdramMister
-	port map (
-		clk			=> clock_sdram_s,
-		init			=> reset_s,
---		refresh_i	=> '1',
-		-- Static RAM bus
-		addr			=> "00" & ram_addr_s,
-		din			=> ram_data_to_s,
-		dout			=> ram_data_from_s,
---		cs_i			=> ram_ce_s,
-		rd				=> ram_oe_s and ram_ce_s, 	-- There's no Cs signal on sdramMister so...
-		we				=> ram_we_s and ram_ce_s, 	-- There's no Cs signal on sdramMister so...
-		ready			=>	sdram_ready,				--	sdramMister 
-		
-		-- SD-RAM ports
-		SDRAM_CLK	=>	sdram_clk_o,
-		SDRAM_CKE	=> sdram_cke_o,
-		SDRAM_nCS	=> sdram_cs_o,
-		SDRAM_nRAS	=> sdram_ras_o,
-		SDRAM_nCAS	=> sdram_cas_o,
-		SDRAM_nWE	=> sdram_we_o,
-		SDRAM_DQMH	=> sdram_dqm_o(1),
-		SDRAM_DQML	=> sdram_dqm_o(0),
-		SDRAM_BA		=> sdram_ba_o,
-		SDRAM_A		=> sdram_ad_o,
-		SDRAM_DQ		=> sdram_da_io
+--	-- RAM
+--	ram: sdramMister
+--	port map (
+--		clk			=> clock_sdram_s,
+--		init			=> reset_s,
+----		refresh_i	=> '1',
+--		-- Static RAM bus
+--		addr			=> "00" & ram_addr_s,
+--		din			=> ram_data_to_s,
+--		dout			=> ram_data_from_s,
+----		cs_i			=> ram_ce_s,
+--		rd				=> ram_oe_s and ram_ce_s, 	-- There's no Cs signal on sdramMister so...
+--		we				=> ram_we_s and ram_ce_s, 	-- There's no Cs signal on sdramMister so...
+--		ready			=>	sdram_ready,				--	sdramMister 
+--		
+--		-- SD-RAM ports
+--		SDRAM_CLK	=>	sdram_clk_o,
+--		SDRAM_CKE	=> sdram_cke_o,
+--		SDRAM_nCS	=> sdram_cs_o,
+--		SDRAM_nRAS	=> sdram_ras_o,
+--		SDRAM_nCAS	=> sdram_cas_o,
+--		SDRAM_nWE	=> sdram_we_o,
+--		SDRAM_DQMH	=> sdram_dqm_o(1),
+--		SDRAM_DQML	=> sdram_dqm_o(0),
+--		SDRAM_BA		=> sdram_ba_o,
+--		SDRAM_A		=> sdram_ad_o,
+--		SDRAM_DQ		=> sdram_da_io
+--
+--	);
 
-	);
+ram: entity work.ssdram
+        generic map (
+                freq_g          => 86
+        )
+        port map (
+                clock_i         => clock_sdram_s,
+                reset_i         => reset_s,
+                refresh_i       => '1',
+                -- Static RAM bus
+                addr_i          => ram_addr_s,
+                data_i          => ram_data_to_s,
+                data_o          => ram_data_from_s,
+                cs_i                    => ram_ce_s,
+                oe_i                    => ram_oe_s,
+                we_i                    => ram_we_s,
+                -- SD-RAM ports
+                mem_cke_o       => sdram_cke_o,
+                mem_cs_n_o      => sdram_cs_o,
+                mem_ras_n_o     => sdram_ras_o,
+                mem_cas_n_o     => sdram_cas_o,
+                mem_we_n_o      => sdram_we_o,
+                mem_udq_o       => sdram_dqm_o(1),
+                mem_ldq_o       => sdram_dqm_o(0),
+                mem_ba_o                => sdram_ba_o,
+                mem_addr_o      => sdram_ad_o(11 downto 0),
+                mem_data_io     => sdram_da_io                
 
+        );
 	
 	-- VRAM
 	vram: entity work.spram
