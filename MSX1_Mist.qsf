@@ -118,6 +118,7 @@ set_location_assignment PIN_33 -to SDRAM_CKE
 set_location_assignment PIN_43 -to SDRAM_CLK
 set_location_assignment PIN_31 -to UART_RXD
 set_location_assignment PIN_46 -to UART_TXD
+set_location_assignment PIN_31 -to TAPE_IN
 
 # Pin & Location Assignments
 # ==========================
