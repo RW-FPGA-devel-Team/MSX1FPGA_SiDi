@@ -312,10 +312,10 @@ set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 #set_global_assignment -name QIP_FILE rtl/video/framebuffer.qip
 
 set_global_assignment -name VHDL_FILE Mist/ssdram.vhd
+set_global_assignment -name SYSTEMVERILOG_FILE Mist/sd_card.sv
 set_global_assignment -name QIP_FILE Mist/pll1.qip
 set_global_assignment -name VHDL_FILE Mist/Mist_top.vhd
 set_global_assignment -name VERILOG_FILE Mist/mist_io.v
-set_global_assignment -name SYSTEMVERILOG_FILE Mist/sd_card.sv
 set_global_assignment -name QIP_FILE "mist-modules/mist.qip"
 set_global_assignment -name VHDL_FILE rtl/audio/dac.vhd
 set_global_assignment -name SYSTEMVERILOG_FILE MSX1.sv

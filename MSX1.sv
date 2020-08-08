@@ -59,7 +59,7 @@ module MSX1_Mist
 
 
 
-assign LED = 0;
+assign LED = sd_busy;
 assign SDRAM_CLK = sdram_clk_o;
 
 //////////////////////////////////////////////////////////////////
@@ -69,11 +69,12 @@ assign SDRAM_CLK = sdram_clk_o;
 
 localparam CONF_STR = {
         "MSX1;;",
-        "S,VHD;",
-        "OE,Reset after Mount,No,Yes;",
+        "S,VHDIMGDSK;",
+		  "OE,Hard reset after Mount,No,Yes;",
 		  "O45,Scandoubler Fx,None,HQ2x,CRT 25%,CRT 50%;",
         "OD,Joysticks Swap,No,Yes;",
-        "T0,Reset;",
+        "T1,Reset (soft);",
+		  "T0,Reset (hard);",
         "V,v",`BUILD_DATE 
 };
 
@@ -138,9 +139,10 @@ mist_io #(.STRLEN($size(CONF_STR)>>3), .PS2DIV(750)) mist_io
 	.conf_str(CONF_STR),
    .sd_conf(0),
    .sd_sdhc(1),
-	.sd_rd(sd_rd),
+   .sd_rd(sd_rd),
    .sd_wr(sd_wr),
-   .ioctl_ce(1),
+
+	.ioctl_ce(1),
 
    // unused
    .ps2_mouse_clk(),
@@ -175,6 +177,7 @@ pll1 pll1
 	.locked(pll_locked)
 );
 
+
 wire reset = status[0] | buttons[1] | !pll_locked | (status[14] && img_mounted);
 
 
@@ -195,33 +198,44 @@ wire scandoubler_disable;
 
 wire sdclk;
 wire sdmosi;
-wire sdmiso =vsdmiso ;
+wire sd_busy;
+//wire sdmiso =vsdmiso ;
 wire sdss;
 
-reg vsd_sel = 0;
+//reg vsd_sel = 0;
 always @(posedge CLOCK_27) if(img_mounted) vsd_sel <= |img_size;
 
 
 
 
 
-wire sdhc = 1;
 wire vsdmiso;
+
 sd_card sd_card
 (
 	.*,
 	.clk_spi(clk_sys), 
-	.sdhc(sdhc),
+	.sdhc(1),
 	.sck(sdclk),
 	.ss(sdss | ~vsd_sel),
 	.mosi(sdmosi),
 	.miso(vsdmiso)
 );
 
-// VHD
-assign SD_CS   = sdss   |  vsd_sel;
-assign SD_SCK  = sdclk  & ~vsd_sel;
-assign SD_MOSI = sdmosi & ~vsd_sel;
+//sd_card sd_card
+//(.*,
+//        .allow_sdhc(1),
+//		  .sd_sck(sdclk),
+//        .sd_cs(sdss   |  ~vsd_sel),
+//        .sd_sdi(sdmosi),
+//        .sd_sdo(vsdmiso),
+//		  .img_mounted(img_mounted[0])
+//);
+
+//// VHD
+//assign SD_CS   = sdss   |  vsd_sel;
+//assign SD_SCK  = sdclk  & ~vsd_sel;
+//assign SD_MOSI = sdmosi & ~vsd_sel;
 
 
 
@@ -243,6 +257,7 @@ Mister_top Msx1Core
 		.clock_vga_s		(clock_vga_s),		//		: std_logic;
 		.pll_locked_s		(pll_locked), 		//		: std_logic;
 		.reset				(reset),
+		.soft_reset_osd   (status[1]),
 		
 //		-- Buttons
 		.sdram_cke_o	(SDRAM_CKE),					//			: out   std_logic								:= '0';
@@ -266,7 +281,8 @@ Mister_top Msx1Core
 		.sd_cs_n_o		(sdss),								//: out   std_logic								:= '1';
 		.sd_sclk_o		(sdclk),								//: out   std_logic								:= '0';
 		.sd_mosi_o		(sdmosi),								//: out   std_logic								:= '0';
-		.sd_miso_i		(sdmiso),								//: in    std_logic;
+		.sd_miso_i		(vsdmiso),								//: in    std_logic;
+		.sd_pres_n_i   (img_mounted),
 
 
 		

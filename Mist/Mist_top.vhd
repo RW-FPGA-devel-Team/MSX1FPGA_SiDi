@@ -56,6 +56,7 @@ entity Mister_top is
 		clock_vga_s			: in 		std_logic;
 		pll_locked_s		: in 		std_logic;
 		reset					: in 		std_logic;
+		soft_reset_osd        : in     std_logic;
 		
 		-- Buttons
 		btn_n_i				: in    std_logic_vector(4 downto 1)	:= (others => '1');
@@ -94,7 +95,7 @@ entity Mister_top is
 		sd_sclk_o			: out   std_logic								:= '0';
 		sd_mosi_o			: out   std_logic								:= '0';
 		sd_miso_i			: in    std_logic;
-
+      sd_pres_n_i       : in    std_logic;
 		-- Joysticks
 		joy1_up_i			: in    std_logic								:= '0';
 		joy1_down_i			: in    std_logic								:= '0';
@@ -433,7 +434,7 @@ begin
 		spi_sclk_o		=> sd_sclk_o,
 		spi_mosi_o		=> sd_mosi_o,
 		spi_miso_i		=> sd_miso_i,
-		sd_pres_n_i		=> '0',  --Sd Presente/Insertada
+		sd_pres_n_i		=> sd_pres_n_i,  --Sd Presente/Insertada
 		sd_wp_i			=> '0',  --Write Protect
 		-- DEBUG
 		D_wait_o			=> open,
@@ -609,7 +610,7 @@ ram: entity work.ssdram
 		if reset_s = '1' then
 			soft_rst_cnt_s	<= X"00";
 		elsif rising_edge(clock_master_s) then
-			if (soft_reset_k_s = '1' or soft_reset_s_s = '1' or por_s = '1') and soft_rst_cnt_s = X"00" then
+			if (soft_reset_k_s = '1' or soft_reset_s_s = '1' or por_s = '1' or soft_reset_osd = '1') and soft_rst_cnt_s = X"00" then
 				soft_rst_cnt_s	<= X"FF";
 			elsif soft_rst_cnt_s /= X"00" then
 				soft_rst_cnt_s <= soft_rst_cnt_s - 1;

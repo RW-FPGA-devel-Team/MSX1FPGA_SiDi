@@ -337,7 +337,7 @@ architecture RTL of ipl_rom is
     x"00",x"40",x"23",x"22",x"00",x"40",x"03",x"79", -- 0x09F0
     x"D6",x"A4",x"78",x"DE",x"01",x"38",x"CD",x"21", -- 0x09F8
     x"84",x"0B",x"E5",x"CD",x"90",x"1B",x"F1",x"3E", -- 0x0A00
-    x"FF",x"D3",x"9E",x"11",x"01",x"0F",x"D5",x"3E", -- 0x0A08
+    x"00",x"D3",x"9E",x"11",x"01",x"0F",x"D5",x"3E", -- 0x0A08
     x"0C",x"F5",x"33",x"CD",x"43",x"1A",x"33",x"21", -- 0x0A10
     x"7D",x"0C",x"E3",x"CD",x"90",x"1B",x"F1",x"2A", -- 0x0A18
     x"50",x"44",x"FD",x"21",x"1C",x"02",x"FD",x"39", -- 0x0A20
