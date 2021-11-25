@@ -299,8 +299,8 @@ end
 
 
 ///////////////////////////////   PS2   ///////////////////////////////
-// 8 byte fifos to store ps2 bytes
-localparam PS2_FIFO_BITS = 3;
+// 16 byte fifos to store ps2 bytes
+localparam PS2_FIFO_BITS = 4;
 
 reg clk_ps2;
 always @(negedge clk_sys) begin
